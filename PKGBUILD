@@ -7,20 +7,22 @@
 buildarch=1
 
 pkgbase=linux
-_srcname=linux-4.14.18-c3x00-r0
+_srcname=linux-4.14.18-c3x00-master
 _kernelname=${pkgbase#linux}
 _desc="ARMv5tel zaurus"
 pkgver=4.14.18
-pkgrel=2
+pkgrel=3
 arch=('arm')
 url="http://www.kernel.org/"
 license=('GPL2')
 makedepends=('xmlto' 'kmod' 'inetutils' 'bc' 'git' 'libelf' 'cpio' 'perl' 'tar' 'xz')
 options=('!strip')
-source=("https://github.com/greguu/linux-4.14.18-c3x00/archive/refs/tags/r0.zip"
-        'config')
-md5sums=('3c6a45ef636769abde483d8decc50c57'
-	 '47bd31f99ff11c9f0bd5b94c65f679aa')
+source=("https://github.com/greguu/linux-4.14.18-c3x00/archive/refs/heads/master.zip"
+        'config'
+        '01-fix-pxa27x-udc.patch')
+md5sums=('SKIP'
+         'SKIP'
+         'SKIP')
 
 prepare() {
   cd "${srcdir}/${_srcname}"
@@ -29,6 +31,8 @@ prepare() {
   # git apply --whitespace=nowarn ../patch-${pkgver}
 
   cat "${srcdir}/config" > ./.config
+
+  git apply "${srcdir}/01-fix-pxa27x-udc.patch"
 
   # add pkgrel to extraversion
   sed -ri "s|^(EXTRAVERSION =)(.*)|\1 \2-${pkgrel}|" Makefile
